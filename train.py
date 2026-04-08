@@ -21,12 +21,12 @@ transform = transforms.Compose([
 ])
 
 train_dataset = torchvision.datasets.ImageFolder(
-    "../Patch-based-dataset/train_data_patch",
+    "/root/autodl-tmp/Patch-based-dataset/train_data_patch",
     transform=transform
 )
 
 test_dataset = torchvision.datasets.ImageFolder(
-    "../Patch-based-dataset/test_data_patch",
+    "/root/autodl-tmp/Patch-based-dataset/test_data_patch",
     transform=transform
 )
 

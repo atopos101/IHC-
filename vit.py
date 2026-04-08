@@ -36,7 +36,12 @@ class TransformerBlock(nn.Module):
     def forward(self, x, mask_weight=None):
         # Self-Attention
         x_norm = self.norm1(x)
-        attn_out = self.attn(x_norm, x_norm, x_norm, attn_mask=mask_weight)[0]
+        if mask_weight is not None:
+            B, seq_len, _ = mask_weight.shape
+            mask_weight_expanded = mask_weight.unsqueeze(1).repeat(1, self.attn.num_heads, 1, 1).view(B * self.attn.num_heads, seq_len, seq_len)
+        else:
+            mask_weight_expanded = None
+        attn_out = self.attn(x_norm, x_norm, x_norm, attn_mask=mask_weight_expanded)[0]
         x = x + attn_out
         
         # MLP

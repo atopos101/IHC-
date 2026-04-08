@@ -3,12 +3,12 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-sam = sam_model_registry["vit_h"](checkpoint="sam_vit_h.pth")
+sam = sam_model_registry["vit_b"](checkpoint="sam_vit_b.pth")
 sam = sam.cuda()
 
 mask_generator = SamAutomaticMaskGenerator(
     model=sam,
-    points_per_side=32,
+    points_per_side=10, #调参
     pred_iou_thresh=0.86,
     stability_score_thresh=0.92,
     crop_n_layers=1,
@@ -26,8 +26,8 @@ def score_mask(mask, image):
         return -1
 
     # RGB
-    R, B = region_rgb[:,0], region_rgb[:,2]
-    rgb_score = np.mean(R) - np.mean(B)
+    R, G, B = region_rgb[:,0], region_rgb[:,1], region_rgb[:,2]
+    rgb_score = np.mean(R) + np.mean(G) - 1.5 * np.mean(B) #调参 关注棕色部分同时剔除正常细胞
 
     # HSV（棕色）
     H, S = region_hsv[:,0], region_hsv[:,1]
